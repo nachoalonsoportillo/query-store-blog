@@ -1,3 +1,4 @@
+BEGIN TRANSACTION;
 INSERT INTO orders VALUES (1, 370, 'O', 172799.49, '1996-01-02 00:00:00', '5-LOW', 'Clerk#000000951', 0, 'nstructions sleep furiously among ');
 INSERT INTO orders VALUES (2, 781, 'O', 38426.09, '1996-12-01 00:00:00', '1-URGENT', 'Clerk#000000880', 0, ' foxes. pending accounts at the pending, silent asymptot');
 INSERT INTO orders VALUES (3, 1234, 'F', 205654.30, '1993-10-14 00:00:00', '5-LOW', 'Clerk#000000955', 0, 'sly final accounts boost. carefully regular ideas cajole carefully. depos');
@@ -14998,5 +14999,4 @@ INSERT INTO orders VALUES (59973, 229, 'O', 230718.14, '1995-11-16 00:00:00', '5
 INSERT INTO orders VALUES (59974, 761, 'O', 63273.39, '1995-12-05 00:00:00', '2-HIGH', 'Clerk#000000862', 0, 'counts. even, ironic packages cajole ironic ');
 INSERT INTO orders VALUES (59975, 706, 'F', 59995.27, '1993-12-22 00:00:00', '5-LOW', 'Clerk#000000193', 0, '. even packages affix fluffily against ');
 INSERT INTO orders VALUES (60000, 1426, 'P', 299401.61, '1995-04-21 00:00:00', '2-HIGH', 'Clerk#000000194', 0, 'usual frets use alongside of the furiou');
-
-
+COMMIT;

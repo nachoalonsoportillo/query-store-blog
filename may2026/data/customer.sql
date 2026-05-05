@@ -1,3 +1,4 @@
+BEGIN TRANSACTION;
 INSERT INTO customer VALUES (1, 'Customer#000000001', 'IVhzIApeRb ot,c,E', 15, '25-989-741-2988', 711.56, 'BUILDING', 'to the even, regular platelets. regular, ironic epitaphs nag e');
 INSERT INTO customer VALUES (2, 'Customer#000000002', 'XSTf4,NCwDVaWNe6tEgvwfmRchLXak', 13, '23-768-687-3665', 121.65, 'AUTOMOBILE', 'l accounts. blithely ironic theodolites integrate boldly: caref');
 INSERT INTO customer VALUES (3, 'Customer#000000003', 'MG9kdTD2WBHm', 1, '11-719-748-3364', 7498.12, 'AUTOMOBILE', ' deposits eat slyly ironic, even instructions. express foxes detect slyly. blithely even accounts abov');
@@ -1498,5 +1499,4 @@ INSERT INTO customer VALUES (1497, 'Customer#000001497', ' D8e2U3gYd57H4grcOr,02
 INSERT INTO customer VALUES (1498, 'Customer#000001498', 'x XToT5oFi7oIsRG2mgIL3ncvYJoWBsufsQ7N,z', 19, '29-676-227-6356', 5810.56, 'AUTOMOBILE', 'ackages are slyly unusual req');
 INSERT INTO customer VALUES (1499, 'Customer#000001499', '4,6jWOEqfnuXkwhB7gs0M9TcWJlaJNv4bt', 3, '13-273-527-9609', 9128.69, 'AUTOMOBILE', 'ole blithely permanent instructions. carefully even packages');
 INSERT INTO customer VALUES (1500, 'Customer#000001500', '4zaoUzuWUTNFiNPbmu43', 5, '15-200-872-4790', 6910.79, 'MACHINERY', 's boost blithely above the fluffily ironic dolphins! ironic accounts');
-
-
+COMMIT;

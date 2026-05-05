@@ -1,3 +1,4 @@
+BEGIN TRANSACTION;
 INSERT INTO nation VALUES (0, 'ALGERIA', 0, ' haggle. carefully final deposits detect slyly agai');
 INSERT INTO nation VALUES (1, 'ARGENTINA', 1, 'al foxes promise slyly according to the regular accounts. bold requests alon');
 INSERT INTO nation VALUES (2, 'BRAZIL', 1, 'y alongside of the pending deposits. carefully special packages are about the ironic forges. slyly special ');
@@ -23,3 +24,4 @@ INSERT INTO nation VALUES (21, 'VIETNAM', 2, 'hely enticingly express accounts. 
 INSERT INTO nation VALUES (22, 'RUSSIA', 3, ' requests against the platelets use never according to the quickly regular pint');
 INSERT INTO nation VALUES (23, 'UNITED KINGDOM', 3, 'eans boost carefully special requests. accounts are. carefull');
 INSERT INTO nation VALUES (24, 'UNITED STATES', 1, 'y final packages. slow foxes cajole quickly. quickly silent platelets breach ironic accounts. unusual pinto be');
+COMMIT;

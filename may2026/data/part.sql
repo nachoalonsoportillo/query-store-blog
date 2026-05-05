@@ -1,3 +1,4 @@
+BEGIN TRANSACTION;
 INSERT INTO part VALUES (1, 'goldenrod lavender spring chocolate lace', 'Manufacturer#1', 'Brand#13', 'PROMO BURNISHED COPPER', 7, 'JUMBO PKG', 901.00, 'ly. slyly ironi');
 INSERT INTO part VALUES (2, 'maroon sky cream royal snow', 'Manufacturer#1', 'Brand#13', 'LARGE BRUSHED BRASS', 1, 'LG CASE', 902.00, 'lar accounts amo');
 INSERT INTO part VALUES (3, 'brown blue puff midnight black', 'Manufacturer#4', 'Brand#42', 'STANDARD POLISHED BRASS', 21, 'WRAP CASE', 903.00, 'egular deposits hag');
@@ -1998,5 +1999,4 @@ INSERT INTO part VALUES (1997, 'forest peru magenta chocolate puff', 'Manufactur
 INSERT INTO part VALUES (1998, 'floral wheat bisque forest lace', 'Manufacturer#2', 'Brand#25', 'LARGE BURNISHED TIN', 37, 'WRAP PACK', 1899.99, 'deas ');
 INSERT INTO part VALUES (1999, 'puff black gainsboro chartreuse tomato', 'Manufacturer#2', 'Brand#25', 'LARGE BURNISHED BRASS', 35, 'SM PKG', 1900.99, 'l ideas! carefully ru');
 INSERT INTO part VALUES (2000, 'blush olive frosted lace cyan', 'Manufacturer#1', 'Brand#12', 'PROMO ANODIZED STEEL', 46, 'SM BAG', 902.00, 'ajole carefully');
-
-
+COMMIT;

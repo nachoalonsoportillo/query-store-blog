@@ -1,3 +1,4 @@
+BEGIN TRANSACTION;
 INSERT INTO supplier VALUES (1, 'Supplier#000000001', ' N kD4on9OM Ipw3,gf0JBoQDd7tgrzrddZ', 17, '27-918-335-1736', 5755.94, 'each slyly above the careful');
 INSERT INTO supplier VALUES (2, 'Supplier#000000002', '89eJ5ksX3ImxJQBvxObC,', 5, '15-679-861-2259', 4032.68, ' slyly bold instructions. idle dependen');
 INSERT INTO supplier VALUES (3, 'Supplier#000000003', 'q1,G3Pj6OjIuUYfUoH18BFTKP5aU9bEV3', 1, '11-383-516-1199', 4192.40, 'blithely silent requests after the express dependencies are sl');
@@ -98,5 +99,4 @@ INSERT INTO supplier VALUES (97, 'Supplier#000000097', 'MrCQha2G6ndX1fp6CA', 4, 
 INSERT INTO supplier VALUES (98, 'Supplier#000000098', 'ogHn8dpXB5Q', 21, '31-914-775-1978', 5873.07, 'esias use slyly under the ironic foxes. re');
 INSERT INTO supplier VALUES (99, 'Supplier#000000099', '4SxkTHG28nZrtT0,MnVF9H', 18, '28-272-909-1617', 3671.34, 'nic dependencies dazzle flu');
 INSERT INTO supplier VALUES (100, 'Supplier#000000100', 'rIlN li8zvW22l2slbcx ECP4fL', 21, '31-351-324-5062', 3191.70, 'es. regular instructions sleep carefully. slyly ironic packages across the foxes boost ');
-
-
+COMMIT;

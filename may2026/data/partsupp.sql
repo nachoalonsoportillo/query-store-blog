@@ -1,3 +1,4 @@
+BEGIN TRANSACTION;
 INSERT INTO partsupp VALUES (1, 2, 3325, 771.64, ', even theodolites. regular, final theodolites eat after the carefully pending foxes. furiously regular deposits sleep slyly. carefully bold realms above the ironic dependencies haggle careful');
 INSERT INTO partsupp VALUES (1, 27, 8076, 993.49, 'ven ideas. quickly even packages print. pending multipliers must have to are fluff');
 INSERT INTO partsupp VALUES (1, 52, 3956, 337.09, 'after the fluffily ironic deposits? blithely special dependencies integrate furiously even excuses. blithely silent theodolites could have to haggle pending, express requests; fu');
@@ -7998,5 +7999,4 @@ INSERT INTO partsupp VALUES (2000, 1, 698, 122.03, 'eep above the furiously regu
 INSERT INTO partsupp VALUES (2000, 45, 3410, 231.06, 'regular foxes detect furiously carefully bold ideas-- carefully silent accounts boost quickly even ');
 INSERT INTO partsupp VALUES (2000, 89, 2642, 558.65, 'final accounts wake express theodolites? slyly regular forges sleep bravely against the finally even pi');
 INSERT INTO partsupp VALUES (2000, 33, 8414, 798.67, 'yly ironic dependencies. blithely final theodolites sleep. furiously ironic accounts wake carefully across the express, regular requests. carefully regul');
-
-
+COMMIT;

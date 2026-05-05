@@ -1,3 +1,4 @@
+BEGIN TRANSACTION;
 INSERT INTO lineitem VALUES (1, 1552, 93, 1, 17, 24710.35, 0.04, 0.02, 'N', 'O', '1996-03-13 00:00:00', '1996-02-12 00:00:00', '1996-03-22 00:00:00', 'DELIVER IN PERSON', 'TRUCK', 'egular courts above the');
 INSERT INTO lineitem VALUES (1, 674, 75, 2, 36, 56688.12, 0.09, 0.06, 'N', 'O', '1996-04-12 00:00:00', '1996-02-28 00:00:00', '1996-04-20 00:00:00', 'TAKE BACK RETURN', 'MAIL', 'ly final dependencies: slyly bold ');
 INSERT INTO lineitem VALUES (1, 637, 38, 3, 8, 12301.04, 0.10, 0.02, 'N', 'O', '1996-01-29 00:00:00', '1996-03-05 00:00:00', '1996-01-31 00:00:00', 'TAKE BACK RETURN', 'REG AIR', 'riously. regular, express dep');
@@ -60173,3 +60174,4 @@ INSERT INTO lineitem VALUES (60000, 1057, 63, 3, 45, 43112.25, 0.02, 0.02, 'R', 
 INSERT INTO lineitem VALUES (60000, 271, 53, 4, 29, 33966.83, 0.02, 0.01, 'N', 'O', '1995-07-25 00:00:00', '1995-06-07 00:00:00', '1995-08-17 00:00:00', 'COLLECT COD', 'SHIP', 'ly final ideas boost s');
 INSERT INTO lineitem VALUES (60000, 585, 16, 5, 31, 46052.98, 0.00, 0.05, 'N', 'O', '1995-08-06 00:00:00', '1995-07-18 00:00:00', '1995-08-19 00:00:00', 'TAKE BACK RETURN', 'TRUCK', 'ly even instr');
 INSERT INTO lineitem VALUES (60000, 836, 3, 6, 45, 78157.35, 0.04, 0.08, 'N', 'O', '1995-07-23 00:00:00', '1995-07-17 00:00:00', '1995-07-24 00:00:00', 'DELIVER IN PERSON', 'TRUCK', 'ke final packages. carefully final fo');
+COMMIT;
