@@ -40,7 +40,7 @@ TIER=${TIER:-GeneralPurpose}
 STORAGE_SIZE=${STORAGE_SIZE:-64}
 VERSION=${VERSION:-17}
 PRIMARY_DATABASE=${PRIMARY_DATABASE:-postgres}
-SQL_BASE_URL=${SQL_BASE_URL:-https://raw.githubusercontent.com/nachoalonsoportillo/query-store-blog/may2026/refs/heads/main}
+SQL_BASE_URL=${SQL_BASE_URL:-https://raw.githubusercontent.com/nachoalonsoportillo/query-store-blog/refs/heads/main/may2026}
 TPCH_DDL_URL=${TPCH_DDL_URL:-${SQL_BASE_URL}/schema/tpch_ddl.sql}
 WORKLOAD_REPETITIONS=${WORKLOAD_REPETITIONS:-5}
 PUBLIC_ACCESS=${PUBLIC_ACCESS:-$(curl -fsSL https://api.ipify.org || printf '0.0.0.0')}
@@ -202,6 +202,7 @@ download_and_execute_sql_against_server() {
   PGPASSWORD="$ADMIN_PASSWORD" psql \
     "host=$server_fqdn port=5432 dbname=$database_name user=$ADMIN_USER sslmode=require" \
     --set ON_ERROR_STOP=1 \
+    --quiet \
     --file "$sql_file"
 }
 
@@ -255,7 +256,7 @@ printf "Creating resource group %s in %s...\n" "$RESOURCE_GROUP" "$LOCATION"
 az group create \
   --name "$RESOURCE_GROUP" \
   --location "$LOCATION" \
-  --tags Scenario=QueryStoreWaitStats Demo=ReplicaChain \
+  --tags Scenario=QueryStore Demo=ReplicaChain \
   --only-show-errors >/dev/null
 
 printf "Creating Log Analytics workspace %s in %s...\n" "$LOG_ANALYTICS_WORKSPACE" "$LOG_ANALYTICS_LOCATION"
@@ -264,7 +265,7 @@ az monitor log-analytics workspace create \
   --workspace-name "$LOG_ANALYTICS_WORKSPACE" \
   --location "$LOG_ANALYTICS_LOCATION" \
   --sku PerGB2018 \
-  --tags Scenario=QueryStoreWaitStats Demo=ReplicaChain \
+  --tags Scenario=QueryStore Demo=ReplicaChain \
   --only-show-errors >/dev/null
 
 workspaceResourceId=$(az monitor log-analytics workspace show \
@@ -287,7 +288,7 @@ az postgres flexible-server create \
   --version "$VERSION" \
   --public-access "$PUBLIC_ACCESS" \
   --high-availability Disabled \
-  --tags Scenario=QueryStoreWaitStats Demo=ReplicaChain \
+  --tags Scenario=QueryStore Demo=ReplicaChain \
   --only-show-errors
 
 wait_for_server_ready "$RESOURCE_GROUP" "$PRIMARY_SERVER"
@@ -297,6 +298,7 @@ configure_query_store_for_server "$RESOURCE_GROUP" "$PRIMARY_SERVER"
 download_and_execute_sql_against_server "$RESOURCE_GROUP" "$PRIMARY_SERVER" "$PRIMARY_DATABASE" "$TPCH_DDL_URL"
 
 for sql_name in customer.sql lineitem.sql nation.sql orders.sql part.sql partsupp.sql region.sql supplier.sql; do
+  printf "Processing data file: %s...\n" "$sql_name"
   download_and_execute_sql_against_server "$RESOURCE_GROUP" "$PRIMARY_SERVER" "$PRIMARY_DATABASE" "${SQL_BASE_URL}/data/${sql_name}"
 done
 
