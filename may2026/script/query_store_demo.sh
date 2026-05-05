@@ -235,6 +235,8 @@ if [[ "$AUTO_APPROVE" != "true" ]]; then
   fi
 fi
 
+process_start_epoch=$(date +%s)
+
 printf "Creating resource group %s in %s...\n" "$RESOURCE_GROUP" "$LOCATION"
 az group create \
   --name "$RESOURCE_GROUP" \
@@ -343,5 +345,13 @@ printf "  SQL     : downloaded and executed from %s against %s\n" "$TPCH_DDL_URL
 printf "  SQL     : also executed customer.sql, lineitem.sql, nation.sql, orders.sql, part.sql, partsupp.sql, region.sql, and supplier.sql from %s against %s\n" "$SQL_BASE_URL/data" "$PRIMARY_SERVER"
 printf "  SQL     : workload1 on all three; workload2 on primary; workload3 on replica1; workload4 on replica2; workload5 on primary+replica1; workload6 on primary+replica2; workload7 on replica1+replica2\n"
 printf "  SQL     : each workload query above was executed %s times\n" "$WORKLOAD_REPETITIONS"
+process_end_epoch=$(date +%s)
+process_duration_seconds=$((process_end_epoch - process_start_epoch))
+process_duration_minutes=$((process_duration_seconds / 60))
+process_duration_remaining_seconds=$((process_duration_seconds % 60))
+printf "  Time    : total elapsed %02d:%02d (%s seconds)\n" \
+  "$process_duration_minutes" \
+  "$process_duration_remaining_seconds" \
+  "$process_duration_seconds"
 printf "\nTo clean up later, run:\n"
 printf "  az group delete --name %s --yes --no-wait\n" "$RESOURCE_GROUP"
