@@ -43,7 +43,6 @@ PRIMARY_DATABASE=${PRIMARY_DATABASE:-postgres}
 SQL_BASE_URL=${SQL_BASE_URL:-https://raw.githubusercontent.com/nachoalonsoportillo/query-store-blog/refs/heads/main/may2026}
 TPCH_DDL_URL=${TPCH_DDL_URL:-${SQL_BASE_URL}/schema/tpch_ddl.sql}
 WORKLOAD_REPETITIONS=${WORKLOAD_REPETITIONS:-5}
-PUBLIC_ACCESS=${PUBLIC_ACCESS:-$(curl -fsSL https://api.ipify.org || printf '0.0.0.0')}
 AUTO_APPROVE=$(printf '%s' "${AUTO_APPROVE:-false}" | tr '[:upper:]' '[:lower:]')
 
 if [[ -z "$ADMIN_PASSWORD" ]]; then
@@ -106,15 +105,17 @@ wait_for_server_ready() {
 open_firewall_for_server() {
   local rg="$1"
   local server_name="$2"
-  local rule_name="allow-all"
+  local rule_name="allow-client-ip"
+  local client_ip=$(curl -fsSL https://api.ipify.org)
 
-  printf "Creating firewall rule '%s' on server %s to allow connections from all IP addresses...\n" "$rule_name" "$server_name"
+
+  printf "Creating firewall rule '%s' on server %s to allow connections from IP address %s...\n" "$rule_name" "$server_name" "$client_ip"
   az postgres flexible-server firewall-rule create \
     --resource-group "$rg" \
     --name "$server_name" \
     --rule-name "$rule_name" \
-    --start-ip-address 0.0.0.0 \
-    --end-ip-address 255.255.255.255 \
+    --start-ip-address "$client_ip" \
+    --end-ip-address "$client_ip" \
     --only-show-errors >/dev/null
 }
 
@@ -198,7 +199,7 @@ download_and_execute_sql_against_server() {
     --only-show-errors)
 
   sql_file=$(mktemp)
-  trap 'rm -f "$sql_file"' RETURN
+  trap "rm -f \"$sql_file\"" RETURN
 
   printf "Downloading SQL from %s...\n" "$sql_url"
   curl -fsSL "$sql_url" -o "$sql_file"
@@ -247,7 +248,6 @@ printf "  TPC-H workload : %s\n" "workload1 on all; workload2 on primary; worklo
 printf "  Repetitions    : %s\n" "$WORKLOAD_REPETITIONS"
 printf "  Version/Tier   : PostgreSQL %s / %s\n" "$VERSION" "$TIER"
 printf "  SKU            : %s\n" "$SKU_NAME"
-printf "  Public access  : %s\n" "$PUBLIC_ACCESS"
 
 if [[ "$AUTO_APPROVE" != "true" ]]; then
   read -r -p "Proceed with provisioning? [y/N] " confirmation
@@ -291,7 +291,6 @@ az postgres flexible-server create \
   --tier "$TIER" \
   --storage-size "$STORAGE_SIZE" \
   --version "$VERSION" \
-  --public-access "$PUBLIC_ACCESS" \
   --high-availability Disabled \
   --tags Scenario=QueryStore Demo=ReplicaChain \
   --only-show-errors
