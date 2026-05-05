@@ -27,14 +27,14 @@ fi
 timestamp=$(date +%Y%m%d%H%M%S)
 BASE_NAME=${BASE_NAME:-pgqswait${timestamp}}
 RESOURCE_GROUP=${RESOURCE_GROUP:-rg-${BASE_NAME}}
-LOCATION=${LOCATION:-canadacentral}
+LOCATION=${LOCATION:-southeastasia}
 PRIMARY_SERVER=${PRIMARY_SERVER:-${BASE_NAME}-primary}
 REPLICA_1=${REPLICA_1:-${BASE_NAME}-readreplica}
 REPLICA_2=${REPLICA_2:-${BASE_NAME}-cascadereadreplica}
 LOG_ANALYTICS_WORKSPACE=${LOG_ANALYTICS_WORKSPACE:-law-${BASE_NAME}}
-LOG_ANALYTICS_LOCATION=${LOG_ANALYTICS_LOCATION:-canadacentral}
+LOG_ANALYTICS_LOCATION=${LOG_ANALYTICS_LOCATION:-southeastasia}
 ADMIN_USER=${ADMIN_USER:-pgadmin}
-ADMIN_PASSWORD=${ADMIN_PASSWORD:-password123!}
+ADMIN_PASSWORD=${ADMIN_PASSWORD:-}
 SKU_NAME=${SKU_NAME:-Standard_D4ds_v5}
 TIER=${TIER:-GeneralPurpose}
 STORAGE_SIZE=${STORAGE_SIZE:-64}
@@ -42,7 +42,7 @@ VERSION=${VERSION:-17}
 PRIMARY_DATABASE=${PRIMARY_DATABASE:-postgres}
 SQL_BASE_URL=${SQL_BASE_URL:-https://raw.githubusercontent.com/nachoalonsoportillo/query-store-blog/refs/heads/main/may2026}
 TPCH_DDL_URL=${TPCH_DDL_URL:-${SQL_BASE_URL}/schema/tpch_ddl.sql}
-WORKLOAD_REPETITIONS=${WORKLOAD_REPETITIONS:-5}
+WORKLOAD_REPETITIONS=${WORKLOAD_REPETITIONS:-10}
 AUTO_APPROVE=$(printf '%s' "${AUTO_APPROVE:-false}" | tr '[:upper:]' '[:lower:]')
 
 if [[ -z "$ADMIN_PASSWORD" ]]; then
@@ -74,48 +74,19 @@ server_exists() {
     --only-show-errors >/dev/null 2>&1
 }
 
-wait_for_server_ready() {
-  local rg="$1"
-  local server_name="$2"
-  local max_checks="${3:-90}"
-  local sleep_seconds="${4:-20}"
-
-  printf "Waiting for server %s to reach state Ready...\n" "$server_name"
-  for ((attempt = 1; attempt <= max_checks; attempt++)); do
-    state=$(az postgres flexible-server show \
-      --resource-group "$rg" \
-      --name "$server_name" \
-      --query state \
-      --output tsv \
-      --only-show-errors 2>/dev/null || true)
-
-    if [[ "$state" == "Ready" ]]; then
-      printf "Server %s is Ready.\n" "$server_name"
-      return 0
-    fi
-
-    printf "Attempt %s/%s: current state for %s is '%s'.\n" "$attempt" "$max_checks" "$server_name" "${state:-unknown}"
-    sleep "$sleep_seconds"
-  done
-
-  printf "Timed out waiting for server %s to become Ready.\n" "$server_name"
-  exit 1
-}
-
 open_firewall_for_server() {
   local rg="$1"
   local server_name="$2"
-  local rule_name="allow-client-ip"
-  local client_ip=$(curl -fsSL https://api.ipify.org)
+  local rule_name="allow-all"
+  
 
-
-  printf "Creating firewall rule '%s' on server %s to allow connections from IP address %s...\n" "$rule_name" "$server_name" "$client_ip"
+  printf "Creating firewall rule '%s' on server %s to allow connections from all IP addresses...\n" "$rule_name" "$server_name"
   az postgres flexible-server firewall-rule create \
     --resource-group "$rg" \
     --name "$server_name" \
     --rule-name "$rule_name" \
-    --start-ip-address "$client_ip" \
-    --end-ip-address "$client_ip" \
+    --start-ip-address 0.0.0.0 \
+    --end-ip-address 255.255.255.255 \
     --only-show-errors >/dev/null
 }
 
@@ -123,7 +94,7 @@ configure_diagnostics_for_server() {
   local rg="$1"
   local server_name="$2"
   local workspace_id="$3"
-  local setting_name="send-alllogs-to-laws"
+  local setting_name="send-query-store-logs-to-laws"
   local server_resource_id
 
   server_resource_id=$(az postgres flexible-server show \
@@ -133,13 +104,13 @@ configure_diagnostics_for_server() {
     --output tsv \
     --only-show-errors)
 
-  printf "Configuring diagnostic settings on server %s to send allLogs to the Log Analytics workspace using resource-specific tables...\n" "$server_name"
+  printf "Configuring diagnostic settings on server %s to send query store logs to the Log Analytics workspace using resource-specific tables...\n" "$server_name"
   az monitor diagnostic-settings create \
     --name "$setting_name" \
     --resource "$server_resource_id" \
     --workspace "$workspace_id" \
     --export-to-resource-specific true \
-    --logs '[{"categoryGroup":"allLogs","enabled":true}]' \
+    --logs '[{"category":"PostgreSQLFlexQueryStoreRuntime","enabled":true},{"category":"PostgreSQLFlexQueryStoreWaitStats","enabled":true},{"category":"PostgreSQLQueryStoreSqlText","enabled":true}]' \
     --only-show-errors >/dev/null
 }
 
@@ -147,7 +118,14 @@ configure_query_store_for_server() {
   local rg="$1"
   local server_name="$2"
 
-  printf "Setting Query Store parameters on server %s...\n" "$server_name"
+  printf "Setting query store parameters on server %s...\n" "$server_name"
+  az postgres flexible-server parameter set \
+    --resource-group "$rg" \
+    --server-name "$server_name" \
+    --name pg_qs.interval_length_minutes \
+    --value 1 \
+    --only-show-errors >/dev/null
+
   az postgres flexible-server parameter set \
     --resource-group "$rg" \
     --server-name "$server_name" \
@@ -296,7 +274,6 @@ az postgres flexible-server create \
   --tags Scenario=QueryStore Demo=ReplicaChain \
   --only-show-errors
 
-wait_for_server_ready "$RESOURCE_GROUP" "$PRIMARY_SERVER"
 open_firewall_for_server "$RESOURCE_GROUP" "$PRIMARY_SERVER"
 configure_diagnostics_for_server "$RESOURCE_GROUP" "$PRIMARY_SERVER" "$workspaceResourceId"
 configure_query_store_for_server "$RESOURCE_GROUP" "$PRIMARY_SERVER"
@@ -317,7 +294,6 @@ az postgres flexible-server replica create \
   --yes \
   --only-show-errors
 
-wait_for_server_ready "$RESOURCE_GROUP" "$REPLICA_1"
 open_firewall_for_server "$RESOURCE_GROUP" "$REPLICA_1"
 configure_diagnostics_for_server "$RESOURCE_GROUP" "$REPLICA_1" "$workspaceResourceId"
 configure_query_store_for_server "$RESOURCE_GROUP" "$REPLICA_1"
@@ -331,7 +307,6 @@ az postgres flexible-server replica create \
   --yes \
   --only-show-errors
 
-wait_for_server_ready "$RESOURCE_GROUP" "$REPLICA_2"
 open_firewall_for_server "$RESOURCE_GROUP" "$REPLICA_2"
 configure_diagnostics_for_server "$RESOURCE_GROUP" "$REPLICA_2" "$workspaceResourceId"
 configure_query_store_for_server "$RESOURCE_GROUP" "$REPLICA_2"
