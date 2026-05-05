@@ -292,7 +292,7 @@ az postgres flexible-server create \
   --storage-size "$STORAGE_SIZE" \
   --version "$VERSION" \
   --high-availability Disabled \
-  --public-access None \
+  --public-access Enabled \
   --tags Scenario=QueryStore Demo=ReplicaChain \
   --only-show-errors
 
