@@ -167,14 +167,19 @@ configure_query_store_for_server() {
     --name pg_qs.emit_query_text \
     --value on \
     --only-show-errors >/dev/null
+}
 
+configure_index_tuning_for_server() {
+  local rg="$1"
+  local server_name="$2"
+
+  printf "Setting index_tuning.mode on server %s...\n" "$server_name"
   az postgres flexible-server parameter set \
     --resource-group "$rg" \
     --server-name "$server_name" \
     --name index_tuning.mode \
     --value report \
     --only-show-errors >/dev/null
-
 }
 
 download_and_execute_sql_against_server() {
@@ -295,6 +300,7 @@ wait_for_server_ready "$RESOURCE_GROUP" "$PRIMARY_SERVER"
 open_firewall_for_server "$RESOURCE_GROUP" "$PRIMARY_SERVER"
 configure_diagnostics_for_server "$RESOURCE_GROUP" "$PRIMARY_SERVER" "$workspaceResourceId"
 configure_query_store_for_server "$RESOURCE_GROUP" "$PRIMARY_SERVER"
+configure_index_tuning_for_server "$RESOURCE_GROUP" "$PRIMARY_SERVER"
 download_and_execute_sql_against_server "$RESOURCE_GROUP" "$PRIMARY_SERVER" "$PRIMARY_DATABASE" "$TPCH_DDL_URL"
 
 for sql_name in customer.sql lineitem.sql nation.sql orders.sql part.sql partsupp.sql region.sql supplier.sql; do
